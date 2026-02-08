@@ -309,4 +309,4 @@ Status(204)
 
 ---
 
-Desenvolvido por Abednego Mayamba.
+Desenvolvido por Abednego Mayamba
