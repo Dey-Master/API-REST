@@ -160,7 +160,8 @@ export const forgetPassword = async (req: Request, res: Response) => {
             {where:{ email: email.toLowerCase() }
         });
 
-        if (!user) return res.status(404).json(`Usuario não encontrado!`);
+        if (!user) return res.status(404) //Aqui é proposital, é para não revelar ao usuario que o email existe ou não existe.
+            .json({ message: 'Se o e-mail existir, enviaremos instruções.' });
 
         const resetToken = crypto.randomBytes(32).toString('hex');
         const expiresAt = new Date(Date.now() + 1000 * 60 * 15);

@@ -48,7 +48,7 @@ export const registerSchema = z.object({
 
     password: z.string().trim()
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/,
-        {message: "A senha deve conter maiúscula, minúscula, número e caractere especial."})
+        {message: "A senha deve conter letras maiúscula, minúscula, número e caractere especial."})
     .min(6, 
         { message:'A senha deve ter pelo menos 6 dígitos!' })
 });
@@ -64,7 +64,7 @@ export const loginSchema = z.object({
 
     password: z.string().trim()
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/,
-        {message: "A senha deve conter maiúscula, minúscula, número e caractere especial."})
+        { message: "A senha deve conter letras maiúscula, minúscula, número e caractere especial." })
     .min(6, 
         { message:'A senha deve ter pelo menos 6 dígitos' })
 });
@@ -86,7 +86,7 @@ export const fogortPasswordSchema = z.object({
 export const resetPasswordSchema = z.object({
     password: z.string().trim()
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/,
-        {message: "A senha deve conter maiúscula, minúscula, número e caractere especial."})
+        { message: "A senha deve conter letras maiúscula, minúscula, número e caractere especial." })
     .min(6, 
         { message:'A senha deve ter pelo menos 6 dígitos' })
 });

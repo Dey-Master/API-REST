@@ -4,8 +4,6 @@ import { authenticateToken } from './middlewares/middlewares';
 import publicRouter   from './routes/public.routes';
 import privateRouter  from './routes/privete.routes';
 import cookieParser from 'cookie-parser';
-import { METHODS } from 'node:http';
-
 
 const server = express();
 
