@@ -177,8 +177,8 @@ export const forgetPassword = async (req: Request, res: Response) => {
             user.email,
             "Redifinição de senha",
             `
-                <h2>Olá ${user.firstname} </h2>
-                <p>Voce solicitou a redifinição da senha. Clique no link a abaixo para redifinir a senha</p>
+                <h2>Olá, ${user.firstname} ${user.lastname} </h2>
+                <p>Voce solicitou a redifinição da senha. Clique no link a abaixo para redifinir a senha:</p>
 
                 <a href= "http://${process.env.HOST}:${process.env.PORT}/api/reset-password/${resetToken}"> 
                     Redifinir minha senha 
@@ -191,7 +191,7 @@ export const forgetPassword = async (req: Request, res: Response) => {
         return res.status(200).json({ message: 'E-mail de redefinição enviado!' });
         
     } catch (error) {
-        return res.status(500).json({ error: 'Erro interno do servidor' });
+        return res.status(500).json({ 'Erro ao enviar e-mail:': error });
     };
 };
 
