@@ -3,15 +3,16 @@ import { prisma } from '../../lib/prisma';
 import { Request, Response } from 'express';
 import  jwt  from 'jsonwebtoken';
 import crypto from 'crypto'
-import { sendMail } from '../services/mailerServices';
+import { sendMail } from '../services/mailer.Services';
+
 
 
 //Registro
 export const register = async ( req: Request, res: Response )=> {
     try {
         const { email, password, firstname, lastname } = req.body as
-         { email: string, password: string, firstname: string, lastname: string };
-         
+        { email: string, password: string, firstname: string, lastname: string };
+        
         const passwordHash = await bcrypt.hash(password, 10);
 
         const user = await prisma.user.create({
@@ -75,7 +76,7 @@ export const login = async ( req: Request, res: Response ) => {
     
     res.cookie('refreshToken', refreshToken, {
        httpOnly: true,
-       secure: false, // Muda para "true" para reconhecer o https, caso uses em produção. 
+       secure: false, // Muda para "true" para reconhecer o https, faças o deploy. 
        sameSite: 'strict', // Muda 'strict' para 'none' caso o Frontend tenha um dominio diferente.
        path: '/'
     });
@@ -155,7 +156,11 @@ export const refreshToken = async (req: Request, res: Response) => {
 export const forgetPassword = async (req: Request, res: Response) => {
     try {
         const { email } = req.body as {email:string};
-        
+        const token = req.cookies.refreshToken;
+
+        if(!token)
+            return res.sendStatus(401);
+
         const user = await prisma.user.findUnique(
             {where:{ email: email.toLowerCase() }
         });
@@ -200,9 +205,12 @@ export const forgetPassword = async (req: Request, res: Response) => {
 //Atualizar a senha
 export const resetPassword = async ( req: Request, res: Response ) => {
     try {
-        const { token } = req.params as { token: string };
         const { password } = req.body as { password: string };
+        const { token } = req.params as { token: string };
 
+        if(!token)
+            return res.sendStatus(401);
+        
         const resetToken =  await prisma.resetPassword.findUnique({ 
             where: { token }
         });

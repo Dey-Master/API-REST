@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
+import { Role } from '../../generated/prisma/enums';
 
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -10,7 +11,7 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
         if (!token) return res.status(401).json({ message: 'Token não encontrado.' });
         
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as 
-            {id: string, sub: string, role: string};
+            {id: string, sub: string, role: Role};
         
         req.user = {id: decoded.sub, role: decoded.role};
         console.log(`Decoded: ${decoded.sub} ${decoded.role}`);

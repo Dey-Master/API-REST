@@ -15,7 +15,7 @@ Ela inclui envio de e-mails para recuperação de senha e utiliza PostgreSQL com
 * Tokens com expiração curta (access: 15min)
 * Rotas privadas protegidas por middleware JWT
 * Validação rigorosa com Zod
-* Segurança avançada (Helmet, Rate Limit, CORS) => (Em desenvolvimento)
+* Segurança avançada (Helmet, Rate Limit, CORS)
 
 ---
 
@@ -100,6 +100,14 @@ JWT_REFRESH_SECRET=sua_chave_refresh_muito_forte_diferente
 # === E-mail (Nodemailer) ===
 EMAIL_USER=seuemail@gmail.com
 EMAIL_PASS=sua_app_password_do_gmail
+
+# === Rate Limit ===
+RATE_LIMIT_WINDOW_MS=180000
+RATE_LIMIT_MAX_REQUESTS=15
+
+# === Cors ===
+CORS_ORIGIN="/production"
+CORS_ORIGIN_NODE_ENV="https://meusite.com"
 ```
 
 ### 4. Sincronize o Banco de Dados:
@@ -302,8 +310,8 @@ Status(204)
 
 * Senhas → sempre com bcrypt (hash + salt)
 * Tokens → JWT expira em 15min (accessToken) ou 7d (refreshToken). Sempre cheque headers.
-* Helmet → protege contra ataques comuns via headers. => (Em desenvolvimento)
-* express-rate-limit → bloqueia quem tenta muitas requisições rápidas. => (Em desenvolvimento)
+* Helmet → protege contra ataques comuns via headers.
+* express-rate-limit → bloqueia quem tenta muitas requisições rápidas.
 * Validação com Zod → impede dados inválidos
 * Emails → só envia se email existir (não revela se conta existe)
 
