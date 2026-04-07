@@ -5,8 +5,10 @@ import { authLimiter } from '../middlewares/rateLimiter';
 
 const router = express.Router();
 
+
 router.post('/register', validate(registerSchema), register);
 router.post('/login', authLimiter, validate(loginSchema), login);
+
 router.post('/refresh', refreshToken);
 
 router.post('/forgot-password', authLimiter, validate(fogortPasswordSchema), forgetPassword);

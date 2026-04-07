@@ -1,16 +1,21 @@
-import 'dotenv/config'
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import { authenticateToken } from './middlewares/authenticateToken';
 import publicRouter   from './routes/public.routes';
-import privateRouter  from './routes/privete.routes';
+import privateRouter  from './routes/private.routes';
 import cookieParser from 'cookie-parser';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './docs/swagger';
 
 const server = express();
 
 server.use(express.json({ limit: '10mb' }));
+
+// Documentação da API - Swagger UI
+server.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Segurança - protege a API contra ataques comuns ajustando headers HTTP automaticamente.
 server.use(helmet())
@@ -31,6 +36,6 @@ server.use(cors({
 
 // Rotas
 server.use('/api', publicRouter);
-server.use('/api/privete', authenticateToken, privateRouter);
+server.use('/api/private', authenticateToken, privateRouter);
 
 export default server;

@@ -27,7 +27,7 @@ export const register = async ( req: Request, res: Response )=> {
 
         return res.status(201).json({ message: "Usuário criado com sucesso!" })
     } catch (error) {
-        return res.status(400).json({ error: "O e-mail encontra-se em uso!" });
+        return res.status(401).json({ error: "O e-mail já está registrado no sistema!" });
     }
 };
 
@@ -46,7 +46,7 @@ export const login = async ( req: Request, res: Response ) => {
     const isPasswordValid =  user ? await bcrypt.compare(password, user.password) : false;
 
     if (!user || !isPasswordValid) 
-        return res.status(400).json({ error: "Credenciais inválidas." });
+        return res.status(401).json({ error: "Credenciais inválidas." });
 
     const accesstoken = jwt.sign(
         { sub: user.id,
@@ -76,7 +76,7 @@ export const login = async ( req: Request, res: Response ) => {
     
     res.cookie('refreshToken', refreshToken, {
        httpOnly: true,
-       secure: false, // Muda para "true" para reconhecer o https, faças o deploy. 
+       secure: true,
        sameSite: 'strict', // Muda 'strict' para 'none' caso o Frontend tenha um dominio diferente.
        path: '/'
     });
@@ -108,7 +108,7 @@ export const logout = async ( req: Request, res: Response ) => {
         if (token) 
             await prisma.refreshToken.deleteMany({where:{ token }});
 
-        console.log(`Logout realizado com sucesso: ${token}`)
+        console.log(`Logout realizado com sucesso.`)
         
         res.clearCookie('refreshToken');
         res.sendStatus(204);
@@ -156,17 +156,13 @@ export const refreshToken = async (req: Request, res: Response) => {
 export const forgetPassword = async (req: Request, res: Response) => {
     try {
         const { email } = req.body as {email:string};
-        const token = req.cookies.refreshToken;
-
-        if(!token)
-            return res.sendStatus(401);
 
         const user = await prisma.user.findUnique(
             {where:{ email: email.toLowerCase() }
         });
 
         if (!user) return res.status(404) //Aqui é proposital, é para não revelar ao usuario que o email existe ou não existe.
-            .json({ message: 'Se o e-mail existir, enviaremos instruções.' });
+            .json({ message: 'Se o e-mail existir, enviaremos as instruções.' });
 
         const resetToken = crypto.randomBytes(32).toString('hex');
         const expiresAt = new Date(Date.now() + 1000 * 60 * 15);
@@ -216,7 +212,7 @@ export const resetPassword = async ( req: Request, res: Response ) => {
         });
 
         if (!resetToken || resetToken.expiresAt < new Date())
-            return res.status(400).json({ message: "Token inválido!" });
+            return res.status(403).json({ message: "Token inválido!" });
 
         const passwordHash = await bcrypt.hash(password, 10);
 
